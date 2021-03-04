@@ -14,7 +14,6 @@
        <l-tile-layer
             :url="url"
             :attribution="attribution"
-            :options="tileoptions"
           >
         </l-tile-layer>
         <l-marker
@@ -75,7 +74,6 @@
     zoom = 17
     url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    tileoptions = {crossOrigin: true}
     
     @Ref('map') readonly map!: any
 

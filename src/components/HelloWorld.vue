@@ -14,6 +14,7 @@
        <l-tile-layer
             :url="url"
             :attribution="attribution"
+            :options="tileoptions"
           >
         </l-tile-layer>
         <l-marker
@@ -43,22 +44,38 @@
     </v-sheet>
   </div>
   <v-btn
+      class="pt-3"
     @click="capture"
   >capture!</v-btn>
+    <v-textarea
+      label="Base64 style"
+      :value="base64"
+      class="pt-03"
+    >
+    </v-textarea>
+    <v-img
+      width="100%"
+      :src="base64"
+    >
+    </v-img>
   </v-container>
 </template>
 
 <script lang="ts">
   import { Component, Vue, Ref } from 'vue-property-decorator'
-  import html2canvas from "html2canvas"
+
+  import * as htmlToImage from "html-to-image"
   import L,{ latLng } from "leaflet"
 
   @Component
   export default class HellOWorld extends Vue {
-    
+
+    base64 = "base64"
+
     zoom = 17
     url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    tileoptions = {crossOrigin: true}
     
     @Ref('map') readonly map!: any
 
@@ -72,8 +89,13 @@
 
     capture() {
       console.log("captured...")
-      html2canvas(this.map.$el, {allowTaint: true, logging: true}).then(canvas => {
-        document.body.appendChild(canvas)
+
+      htmlToImage.toPng(this.map.$el)
+      .then((dataUrl) => {
+        this.base64 = dataUrl
+      })
+      .catch(function (error) {
+        console.error("Hat nicht geklappt: ", error)
       })
     }
   }

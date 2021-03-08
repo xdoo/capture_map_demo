@@ -2,7 +2,8 @@
   <v-container>
   <div>
     <v-sheet
-      height="150"
+      ref="sheet"
+      height="300"
       width="100%"
     > 
       <l-map
@@ -11,10 +12,19 @@
         :zoom="zoom"
         :options="mapOptions"
       >
-       <l-tile-layer
-            :url="url"
-            :attribution="attribution"
-          >
+<!--       <l-wms-tile-layer-->
+<!--            :base-url="url"-->
+<!--            layers="g_stadtkarte_gesamt"-->
+<!--            :attribution="attribution"-->
+<!--            layer-type="base"-->
+<!--            :tile-size="tileSize"-->
+<!--          >-->
+<!--        </l-wms-tile-layer>-->
+        <l-tile-layer
+          :url="url"
+          :attribution="attribution"
+        >
+
         </l-tile-layer>
         <l-marker
           :lat-lng="[48.17931, 11.51500]"
@@ -70,12 +80,15 @@
   export default class HellOWorld extends Vue {
 
     base64 = "base64"
+    tileSize = 300
 
     zoom = 17
+    // url = 'https://geoportal.muenchen.de/geoserver/gsm/wms?'
     url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     
     @Ref('map') readonly map!: any
+    @Ref('sheet') readonly sheet!: HTMLDivElement
 
     get mapOptions() {
       return {preferCanvas: true}
@@ -86,8 +99,10 @@
     }
 
     capture() {
-      console.log("captured...")
-
+      console.log("captured...", this.sheet)
+      // const rect = this.sheet.getBoundingClientRect() as DOMRect
+      // console.log("height: ", rect.height)
+      // console.log("width: ", rect.width)
       htmlToImage.toPng(this.map.$el)
       .then((dataUrl) => {
         this.base64 = dataUrl

@@ -4,7 +4,7 @@
     <v-sheet
       ref="sheet"
       height="300"
-      width="100%"
+      width="1000"
     > 
       <l-map
         ref="map"
@@ -12,20 +12,18 @@
         :zoom="zoom"
         :options="mapOptions"
       >
-<!--       <l-wms-tile-layer-->
-<!--            :base-url="url"-->
-<!--            layers="g_stadtkarte_gesamt"-->
-<!--            :attribution="attribution"-->
-<!--            layer-type="base"-->
-<!--            :tile-size="tileSize"-->
-<!--          >-->
-<!--        </l-wms-tile-layer>-->
-        <l-tile-layer
-          :url="url"
-          :attribution="attribution"
-        >
-
-        </l-tile-layer>
+       <l-wms-tile-layer
+            :base-url="url"
+            layers="g_stadtkarte_gesamt"
+            :attribution="attribution"
+            layer-type="base"
+          >
+        </l-wms-tile-layer>
+<!--        <l-tile-layer-->
+<!--          :url="url"-->
+<!--          :attribution="attribution"-->
+<!--        >-->
+<!--        </l-tile-layer>-->
         <l-marker
           :lat-lng="[48.17931, 11.51500]"
 
@@ -74,24 +72,25 @@
   import { Component, Vue, Ref } from 'vue-property-decorator'
 
   import * as htmlToImage from "html-to-image"
+  import domtoimage from 'dom-to-image-more'
   import L,{ latLng } from "leaflet"
 
   @Component
   export default class HellOWorld extends Vue {
 
     base64 = "base64"
-    tileSize = 300
+    // tileSize = 1050
 
     zoom = 17
-    // url = 'https://geoportal.muenchen.de/geoserver/gsm/wms?'
-    url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    url = 'https://geoportal.muenchen.de/geoserver/gsm/wms?'
+    // url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     
     @Ref('map') readonly map!: any
     @Ref('sheet') readonly sheet!: HTMLDivElement
 
     get mapOptions() {
-      return {preferCanvas: true}
+      return {preferCanvas: false}
     }
 
     clikker() {
@@ -103,12 +102,20 @@
       // const rect = this.sheet.getBoundingClientRect() as DOMRect
       // console.log("height: ", rect.height)
       // console.log("width: ", rect.width)
-      htmlToImage.toPng(this.map.$el)
-      .then((dataUrl) => {
+      // htmlToImage.toPng(this.map.$el)
+      // .then((dataUrl) => {
+      //   this.base64 = dataUrl
+      // })
+      // .catch(function (error) {
+      //   console.error("Hat nicht geklappt: ", error)
+      // })
+
+      domtoimage.toPng(this.map.$el)
+      .then((dataUrl: string) => {
         this.base64 = dataUrl
       })
-      .catch(function (error) {
-        console.error("Hat nicht geklappt: ", error)
+      .catch((error: any) => {
+        console.warn(error)
       })
     }
   }

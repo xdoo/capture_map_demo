@@ -13,11 +13,24 @@
         :options="mapOptions"
       >
        <l-wms-tile-layer
+            visible
             :base-url="url"
             layers="g_stadtkarte_gesamt"
             :attribution="attribution"
             layer-type="base"
+            name="Stadtkarte"
           >
+        </l-wms-tile-layer>
+        <l-wms-tile-layer
+            transparent
+            visible
+            :base-url="url"
+            :attribution="attribution"
+            layer-type="overlay"
+            format="image/png"
+            layers="gsm:stadtbezirk"
+            name="Stadtbezirke"
+        >
         </l-wms-tile-layer>
 <!--        <l-tile-layer-->
 <!--          :url="url"-->
